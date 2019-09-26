@@ -1,6 +1,7 @@
-import 'package:audio_recorder/recording_button.dart';
-import 'package:audio_recorder/serve/recording_services/recording_state.dart';
-import 'package:audio_recorder/serve/recording_services/recordings.dart';
+import 'package:audio_recorder/ios_version/recording_button.dart';
+import 'package:audio_recorder/services/Models/recording.dart';
+import 'package:audio_recorder/services/recording_services/recording_state.dart';
+import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';

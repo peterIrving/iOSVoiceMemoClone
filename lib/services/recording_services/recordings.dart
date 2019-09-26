@@ -1,3 +1,4 @@
+import 'package:audio_recorder/services/Models/recording.dart';
 import 'package:flutter/foundation.dart';
 
 class Recordings with ChangeNotifier {
@@ -31,22 +32,3 @@ class Recordings with ChangeNotifier {
 
 }
 
-class Recording with ChangeNotifier {
-  final int id;
-  String title;
-  String notes;
-  final String path;
-  final DateTime createdAt;
-  DateTime updatedAt;
-
-  Recording({
-    this.id,
-    @required this.path,
-    @required this.createdAt,
-    this.title = "untitled",
-    this.notes = "enter some data",
-  });
-
-
-
-}

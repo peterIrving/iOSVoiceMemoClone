@@ -1,10 +1,11 @@
-import 'package:audio_recorder/recording_tab.dart';
-import 'package:audio_recorder/serve/recording_services/recording_state.dart';
+import 'package:audio_recorder/ios_version/recording_button.dart';
+import 'package:audio_recorder/ios_version/recording_tab.dart';
+import 'package:audio_recorder/services/recording_services/recording_state.dart';
+import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:provider/provider.dart';
 
-import 'serve/recording_services/recordings.dart';
 
 class RecordingListPage extends StatefulWidget {
   @override
@@ -76,6 +77,7 @@ class _RecordingListPageState extends State<RecordingListPage> {
   @override
   Widget build(BuildContext context) {
     final recordingState = Provider.of<RecordingState>(context);
+    final _recordings = Provider.of<Recordings>(context);
     bool _isRecording = recordingState.getRecordingState;
 
     print("isRecording: $_isRecording");
@@ -92,19 +94,35 @@ class _RecordingListPageState extends State<RecordingListPage> {
                   )
                 : _buildCustomListView(recordingState, context),
           ),
-//          Container(
-//            color: _isRecording ? Colors.black45 : Colors.transparent,
-//          ),
           Column(
             children: <Widget>[
               Expanded(
                 child: Container(),
               ),
               RecordingTab()
+//              AnimatedButton(onPressed: () {
+//                recordingState.setRecordingState(!recordingState.getRecordingState);
+//                toggleRecording(recordingState, _recordings); },)
             ],
           ),
         ],
       ),
     );
   }
+
+//  toggleRecording(RecordingState state, Recordings recordings) {
+//    print("state in toggleRecording: ${state.getRecordingState}");
+//
+//    Recording recording = Recording(
+//        createdAt: DateTime.now(),
+//        path: DateTime.now().toString(),
+//        title: "Hey is this work?"
+//    );
+//
+//    if (state.getRecordingState == true) {
+//      state.startRecording(recordings.addRecording(recording), recording.createdAt.toString() );
+//    } else {
+//      state.stopRecording();
+//    }
+//  }
 }
