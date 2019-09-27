@@ -1,5 +1,6 @@
 import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
+import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
 import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/gestures.dart';
@@ -19,7 +20,7 @@ class _RecordingTabState extends State<RecordingTab> {
   FlutterSound flutterSound = new FlutterSound();
 
   RecordingState recordingState;
-  Recordings recordings;
+  RecordingsDatabaseRepository recordingRepository;
 
   @override
   void dispose() {
@@ -37,7 +38,8 @@ class _RecordingTabState extends State<RecordingTab> {
     );
 
     if (state.getRecordingState == true) {
-      state.startRecording(recordings.addRecording(recording), recording.createdAt.toString() );
+      recordingRepository.insert(recording);
+      state.startRecording(recording.createdAt.toString() );
     } else {
       state.stopRecording();
     }
@@ -103,7 +105,7 @@ class _RecordingTabState extends State<RecordingTab> {
   @override
   Widget build(BuildContext context) {
     recordingState = Provider.of<RecordingState>(context);
-    recordings = Provider.of<Recordings>(context);
+    recordingRepository = Provider.of<RecordingsDatabaseRepository>(context);
     bool isRecording = recordingState.getRecordingState;
 
     double screenWidth = MediaQuery.of(context).size.width;

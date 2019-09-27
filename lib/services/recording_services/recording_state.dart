@@ -29,13 +29,13 @@ class RecordingState with ChangeNotifier {
     return directory.path;
   }
 
-  startRecording(Function _insertRecording, String path) async {
+  startRecording(/*Function _insertRecording*/ String path) async {
     print("Starting recording");
     Future<String> result =
         _flutterSound.startRecorder(join(await _getAppDirectory(), path+".m4a"));
 
-    //TODO insert object into database
-    _insertRecording();
+//    //TODO insert object into database
+//    _insertRecording();
 
     _isRecording = true;
     _isPlaying = false;

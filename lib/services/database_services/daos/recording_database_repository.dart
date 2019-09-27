@@ -40,11 +40,15 @@ class RecordingsDatabaseRepository with ChangeNotifier implements RecordingRepos
     return recording;
   }
 
-
   @override
   Future<List<Recording>> getRecordings() async {
     final db = await databaseProvider.db();
     List<Map> maps = await db.query(dao.tableName);
     return dao.fromList(maps);
   }
+
+//  Future<List<Recording>> get recordings async {
+//    return getRecordings();
+//  }
+
 }

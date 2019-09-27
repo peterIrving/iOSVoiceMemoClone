@@ -1,11 +1,12 @@
 import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/ios_version/recording_tab.dart';
+import 'package:audio_recorder/services/Models/recording.dart';
+import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
 import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:provider/provider.dart';
-
 
 class RecordingListPage extends StatefulWidget {
   @override
@@ -42,42 +43,55 @@ class _RecordingListPageState extends State<RecordingListPage> {
     );
   }
 
+
   Widget _buildCustomListView(
       RecordingState recordingState, BuildContext context) {
-    final _recordings = Provider.of<Recordings>(context).getRecordings;
+    final _recordings =
+        Provider.of<RecordingsDatabaseRepository>(context).getRecordings();
 
-    return CustomScrollView(
-      slivers: <Widget>[
-        _buildCustomAppBar(),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 100.0),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                final _recording = _recordings[index];
+    return FutureBuilder(
+      future: _recordings,
+      builder: (context, AsyncSnapshot<List<Recording>> snapshot) {
 
-                return ListTile(
-                  title: Text(_recording.title),
-                  subtitle: Text(_recording.notes),
-                  onTap: () {
-                    print("tile clicked");
-                    recordingState.playRecording();
-                  },
-                );
-              },
-              childCount: _recordings.length,
-            ),
-          ),
-        ),
+        if (snapshot.hasData) {
+          return CustomScrollView(
+            slivers: <Widget>[
+              _buildCustomAppBar(),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 100.0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      final _recording = snapshot.data[index];
 
-      ],
+                      return ListTile(
+                        title: Text(_recording.title),
+                        subtitle: Text(_recording.notes),
+                        onTap: () {
+                          print("tile clicked");
+                          recordingState.playRecording();
+                        },
+                      );
+                    },
+                    childCount: snapshot.data.length,
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final recordingState = Provider.of<RecordingState>(context);
-    final _recordings = Provider.of<Recordings>(context);
+//    final _recordings = Provider.of<RecordingsDatabaseRepository>(context);
     bool _isRecording = recordingState.getRecordingState;
 
     print("isRecording: $_isRecording");

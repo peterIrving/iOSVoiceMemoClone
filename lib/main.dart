@@ -1,4 +1,5 @@
 import 'package:audio_recorder/ios_version/recording_list_page.dart';
+import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
 import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<RecordingState>.value(
           notifier: RecordingState(),
         ),
-        ChangeNotifierProvider<Recordings>.value(
-          notifier: Recordings(),
+        ChangeNotifierProvider<RecordingsDatabaseRepository>.value(
+          notifier: RecordingsDatabaseRepository(),
         ),
       ],
       child: MaterialApp(
