@@ -1,5 +1,5 @@
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'dao.dart';
+import 'package:audio_recorder/services/database_services/dao.dart';
 
 class RecordingDao implements Dao<Recording> {
   final tableName = "recordings";

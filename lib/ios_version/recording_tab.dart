@@ -1,6 +1,5 @@
 import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/database_services/daos/recording_provider.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class RecordingTab extends StatefulWidget {
 class _RecordingTabState extends State<RecordingTab> {
   FlutterSound flutterSound = new FlutterSound();
 
-  RecordingsProvider recordingsProvider;
+  RecordingState recordingState;
 
   @override
   void dispose() {
@@ -23,7 +22,7 @@ class _RecordingTabState extends State<RecordingTab> {
     super.dispose();
   }
 
-  toggleRecording(RecordingsProvider state) {
+  toggleRecording(RecordingState state) {
     print("state in toggleRecording: ${state.getRecordingState}");
 
     if (state.getRecordingState == true) {
@@ -71,9 +70,9 @@ class _RecordingTabState extends State<RecordingTab> {
 //                ),
                   child: AnimatedButton(
                     onPressed: () {
-                      recordingsProvider
-                          .setRecordingState(!recordingsProvider.getRecordingState);
-                      toggleRecording(recordingsProvider);
+                      recordingState
+                          .setRecordingState(!recordingState.getRecordingState);
+                      toggleRecording(recordingState);
                     },
                   ),
                 ),
@@ -93,9 +92,9 @@ class _RecordingTabState extends State<RecordingTab> {
 
   @override
   Widget build(BuildContext context) {
-    recordingsProvider = Provider.of<RecordingsProvider>(context);
+    recordingState = Provider.of<RecordingState>(context);
 //    recordingRepository = Provider.of<RecordingsDatabaseRepository>(context);
-    bool isRecording = recordingsProvider.getRecordingState;
+    bool isRecording = recordingState.getRecordingState;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double height = isRecording ? 300 : 100;

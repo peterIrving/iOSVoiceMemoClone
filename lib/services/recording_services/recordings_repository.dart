@@ -1,7 +1,6 @@
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/database_services/daos/recording_dao.dart';
-import '../database_provider.dart';
-import '../recording_repository.dart';
+import 'package:audio_recorder/services/database_services/database_provider.dart';
+import 'package:audio_recorder/services/recording_services/recording_dao.dart';
 
 class RecordingsRepository {
   final dao = RecordingDao();
