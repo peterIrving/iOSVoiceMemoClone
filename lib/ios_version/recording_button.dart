@@ -1,3 +1,4 @@
+import 'package:audio_recorder/services/database_services/daos/recording_provider.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,8 @@ class AnimatedButton extends StatefulWidget {
 class _AnimatedButtonState extends State<AnimatedButton> {
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<RecordingState>(context);
-    bool _isRecording = appState.getRecordingState;
+    final recordingsProvider = Provider.of<RecordingsProvider>(context);
+    bool _isRecording = recordingsProvider.getRecordingState;
 
     double buttonRadius = _isRecording ? 32 : 70;
     ShapeBorder shapeBorder = _isRecording

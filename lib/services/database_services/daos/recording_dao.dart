@@ -18,7 +18,7 @@ class RecordingDao implements Dao<Recording> {
         $columnId INTEGER PRIMARY KEY,
         $_columnTitle TEXT,
         $_columnNotes TEXT,
-        $_columnPath TEXT
+        $_columnPath TEXT,
         $_columnCreatedAt DATE,
         $_columnUpdatedAt DATE)
     """;
@@ -53,9 +53,9 @@ class RecordingDao implements Dao<Recording> {
       columnId: object.id,
       _columnTitle: object.title,
       _columnNotes: object.notes,
-      _columnPath: object.path,
-      _columnCreatedAt: object.createdAt,
-      _columnUpdatedAt: object.updatedAt,
+      _columnPath: object.path.toString(),
+      _columnCreatedAt: object.createdAt.toString(),
+      _columnUpdatedAt: object.updatedAt.toString(),
     };
   }
 }

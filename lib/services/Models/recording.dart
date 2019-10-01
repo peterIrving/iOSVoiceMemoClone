@@ -5,8 +5,8 @@ class Recording with ChangeNotifier {
   String title;
   String notes;
   String path;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String createdAt;
+  String updatedAt;
 
   Recording({
     this.id,

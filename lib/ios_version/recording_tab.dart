@@ -1,14 +1,10 @@
 import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
+import 'package:audio_recorder/services/database_services/daos/recording_provider.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
-import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class RecordingTab extends StatefulWidget {
@@ -19,8 +15,7 @@ class RecordingTab extends StatefulWidget {
 class _RecordingTabState extends State<RecordingTab> {
   FlutterSound flutterSound = new FlutterSound();
 
-  RecordingState recordingState;
-  RecordingsDatabaseRepository recordingRepository;
+  RecordingsProvider recordingsProvider;
 
   @override
   void dispose() {
@@ -28,18 +23,11 @@ class _RecordingTabState extends State<RecordingTab> {
     super.dispose();
   }
 
-  toggleRecording(RecordingState state) {
+  toggleRecording(RecordingsProvider state) {
     print("state in toggleRecording: ${state.getRecordingState}");
 
-    Recording recording = Recording(
-      createdAt: DateTime.now(),
-      path: DateTime.now().toString(),
-      title: "Hey is this work?"
-    );
-
     if (state.getRecordingState == true) {
-      recordingRepository.insert(recording);
-      state.startRecording(recording.createdAt.toString() );
+      state.startRecording();
     } else {
       state.stopRecording();
     }
@@ -82,10 +70,11 @@ class _RecordingTabState extends State<RecordingTab> {
 //                  ),
 //                ),
                   child: AnimatedButton(
-
                     onPressed: () {
-                      recordingState.setRecordingState(!recordingState.getRecordingState);
-                      toggleRecording(recordingState); },
+                      recordingsProvider
+                          .setRecordingState(!recordingsProvider.getRecordingState);
+                      toggleRecording(recordingsProvider);
+                    },
                   ),
                 ),
               ),
@@ -104,9 +93,9 @@ class _RecordingTabState extends State<RecordingTab> {
 
   @override
   Widget build(BuildContext context) {
-    recordingState = Provider.of<RecordingState>(context);
-    recordingRepository = Provider.of<RecordingsDatabaseRepository>(context);
-    bool isRecording = recordingState.getRecordingState;
+    recordingsProvider = Provider.of<RecordingsProvider>(context);
+//    recordingRepository = Provider.of<RecordingsDatabaseRepository>(context);
+    bool isRecording = recordingsProvider.getRecordingState;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double height = isRecording ? 300 : 100;
@@ -143,8 +132,8 @@ class _RecordingTabState extends State<RecordingTab> {
           });
         }
       },
-      child: _buildTabBar(height + heightChange, screenWidth, buttonRadius,
-          bottomConstraint),
+      child: _buildTabBar(
+          height + heightChange, screenWidth, buttonRadius, bottomConstraint),
     );
   }
 }

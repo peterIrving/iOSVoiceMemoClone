@@ -1,11 +1,9 @@
-import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/ios_version/recording_tab.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
-import 'package:audio_recorder/services/recording_services/recording_state.dart';
-import 'package:audio_recorder/services/recording_services/recordings.dart';
+import 'package:audio_recorder/services/database_services/daos/recording_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class RecordingListPage extends StatefulWidget {
@@ -43,16 +41,18 @@ class _RecordingListPageState extends State<RecordingListPage> {
     );
   }
 
+  String _formatTimestamp(String dateString) {
+    DateTime time = DateTime.parse(dateString);
+    return DateFormat.yMMMd('en_US').add_jm().format(time).toString();
+  }
 
   Widget _buildCustomListView(
-      RecordingState recordingState, BuildContext context) {
-    final _recordings =
-        Provider.of<RecordingsDatabaseRepository>(context).getRecordings();
+      RecordingsProvider recordingState, BuildContext context) {
+    final _recordings = Provider.of<RecordingsProvider>(context).getRecordings;
 
     return FutureBuilder(
       future: _recordings,
       builder: (context, AsyncSnapshot<List<Recording>> snapshot) {
-
         if (snapshot.hasData) {
           return CustomScrollView(
             slivers: <Widget>[
@@ -63,13 +63,14 @@ class _RecordingListPageState extends State<RecordingListPage> {
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       final _recording = snapshot.data[index];
-
+//                      final _recording = _recordings[index];
                       return ListTile(
-                        title: Text(_recording.title),
-                        subtitle: Text(_recording.notes),
+                        title: Text(_recording.path ?? "test"),
+                        subtitle: Text(_formatTimestamp(_recording.createdAt)),
                         onTap: () {
                           print("tile clicked");
-                          recordingState.playRecording();
+                          print("path ${_recording.path}");
+                          recordingState.playRecording("testingtesting.m4a");
                         },
                       );
                     },
@@ -79,18 +80,56 @@ class _RecordingListPageState extends State<RecordingListPage> {
               ),
             ],
           );
+        } else if (snapshot.hasError) {
+          print('error');
+          return CustomScrollView(
+            slivers: <Widget>[
+              _buildCustomAppBar(),
+              SliverFillRemaining(
+                child: Center(child: Text("error")),
+              ),
+            ],
+          );
         } else {
-          return Center(
-            child: CircularProgressIndicator(),
+          return CustomScrollView(
+            slivers: <Widget>[
+              _buildCustomAppBar(),
+              SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            ],
           );
         }
       },
     );
+//    return CustomScrollView(slivers: <Widget>[
+//      _buildCustomAppBar(),
+//      SliverPadding(
+//        padding: const EdgeInsets.only(bottom: 100.0),
+//        sliver: SliverList(
+//          delegate: SliverChildBuilderDelegate(
+//            (BuildContext context, int index) {
+//              final _recording = snapshot.data[index];
+////                      final _recording = _recordings[index];
+//              return ListTile(
+//                title: Text(_recording.title),
+//                subtitle: Text(_formatTimestamp(_recording.createdAt)),
+//                onTap: () {
+//                  print("tile clicked");
+//                  recordingState.playRecording();
+//                },
+//              );
+//            },
+//            childCount: snapshot.data.length,
+//          ),
+//        ),
+//      ),
+//    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final recordingState = Provider.of<RecordingState>(context);
+    final recordingState = Provider.of<RecordingsProvider>(context);
 //    final _recordings = Provider.of<RecordingsDatabaseRepository>(context);
     bool _isRecording = recordingState.getRecordingState;
 

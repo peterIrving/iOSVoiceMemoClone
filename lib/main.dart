@@ -1,9 +1,9 @@
 import 'package:audio_recorder/ios_version/recording_list_page.dart';
-import 'package:audio_recorder/services/database_services/daos/recording_database_repository.dart';
 import 'package:audio_recorder/services/recording_services/recording_state.dart';
-import 'package:audio_recorder/services/recording_services/recordings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'services/database_services/daos/recording_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,11 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<RecordingState>.value(
-          notifier: RecordingState(),
-        ),
-        ChangeNotifierProvider<RecordingsDatabaseRepository>.value(
-          notifier: RecordingsDatabaseRepository(),
+//        ChangeNotifierProvider<RecordingsProvider>.value(
+//          notifier: RecordingState(),
+//        ),
+        ChangeNotifierProvider<RecordingsProvider>.value(
+          notifier: RecordingsProvider(),
         ),
       ],
       child: MaterialApp(

@@ -1,49 +1,45 @@
 import 'package:audio_recorder/services/Models/recording.dart';
 import 'package:audio_recorder/services/database_services/daos/recording_dao.dart';
-import 'package:flutter/material.dart';
 import '../database_provider.dart';
 import '../recording_repository.dart';
 
-class RecordingsDatabaseRepository with ChangeNotifier implements RecordingRepository  {
+class RecordingsRepository {
   final dao = RecordingDao();
 
-  @override
-  DatabaseProvider databaseProvider;
+//  DatabaseProvider databaseProvider;
+  DatabaseHelper databaseHelper = DatabaseHelper();
 
-  RecordingsDatabaseRepository(this.databaseProvider);
+//  RecordingsDatabaseRepository(this.databaseProvider);
 
   // todo find workflow that inserts recording into database, but then updates the UI as well
   // todo with a newly fetched array of recordings
-  @override
-  Future<Recording> insert(Recording recording) async {
-    final db = await databaseProvider.db();
-    recording.id = await db.insert(dao.tableName, dao.toMap(recording));
-    return recording;
+  Future<int> insert(Recording recording) async {
+    final db = await databaseHelper.database;
+    print(dao.toMap(recording).toString());
+    var success = await db.insert(dao.tableName, dao.toMap(recording));
+    return success;
   }
 
 
   //todo delete and update repository
-  @override
   Future<Recording> delete(Recording recording) async {
-    final db = await databaseProvider.db();
+    final db = await databaseHelper.database;
     await db.delete(dao.tableName,
         where: dao.columnId + " = ?", whereArgs: [recording.id]);
     return recording;
   }
 
   // todo update and update repository
-  @override
   Future<Recording> update(Recording recording) async {
-    final db = await databaseProvider.db();
+    final db = await databaseHelper.database;
     await db.update(dao.tableName, dao.toMap(recording),
         where: dao.columnId + " = ?", whereArgs: [recording.id]);
     return recording;
   }
 
-  @override
   Future<List<Recording>> getRecordings() async {
-    final db = await databaseProvider.db();
-    List<Map> maps = await db.query(dao.tableName);
+    final db = await databaseHelper.database;
+    List<Map> maps = await db.rawQuery("SELECT * FROM ${dao.tableName} ORDER BY created_at DESC");
     return dao.fromList(maps);
   }
 
