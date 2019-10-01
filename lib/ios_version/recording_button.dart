@@ -1,4 +1,4 @@
-import 'package:audio_recorder/services/recording_services/recording_state.dart';
+import 'package:audio_recorder/services/recording_services/recording_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

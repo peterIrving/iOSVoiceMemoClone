@@ -1,5 +1,5 @@
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/database_services/database_provider.dart';
+import 'package:audio_recorder/services/database_services/database_helper.dart';
 import 'package:audio_recorder/services/recording_services/recording_dao.dart';
 
 class RecordingsRepository {

@@ -9,14 +9,20 @@ import 'package:path_provider/path_provider.dart';
 class RecordingState with ChangeNotifier {
   RecordingState();
 
-  bool _needsFetchingFromDb = true;
-
   List<Recording> _recordings = [];
 
-//  List<Recording> get getRecordings {
-//
-//    return [..._recordings];
-//  }
+  bool _needsFetchingFromDb = true;
+  bool _isRecording = false;
+  bool _isPlaying = false;
+  String _currentTime = "00:00";
+
+  FlutterSound _flutterSound = FlutterSound();
+  var _playerSubscription;
+  var _recordingSubscription;
+
+  bool get getRecordingState => _isRecording;
+  bool get getPlayState => _isPlaying;
+  String get getCurrentTime => _currentTime;
 
   Future<List<Recording>> get getRecordings async {
     print("get recordings called");
@@ -37,24 +43,16 @@ class RecordingState with ChangeNotifier {
     }
   }
 
-  bool _isRecording = false;
-  bool _isPlaying = false;
-
-
-
-  FlutterSound _flutterSound = FlutterSound();
-  var _playerSubscription;
-  var _recordingSubscription;
-
   void setRecordingState(bool isRecording) {
     _isRecording = isRecording;
     _isPlaying = false;
     notifyListeners();
   }
 
-  bool get getRecordingState => _isRecording;
 
-  bool get getPlayState => _isPlaying;
+
+
+
 
   Future<String> _getAppDirectory() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -102,8 +100,9 @@ class RecordingState with ChangeNotifier {
       _recordingSubscription = _flutterSound.onRecorderStateChanged.listen((e) {
         DateTime date =
             new DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
-        String txt = DateFormat('mm:ss:SS', 'en_US').format(date);
-//        print("timestamp: $txt");
+        _currentTime = DateFormat('mm:ss.SS', 'en_US').format(date);
+
+        notifyListeners();
       });
     });
   }
@@ -142,7 +141,8 @@ class RecordingState with ChangeNotifier {
         if (e != null) {
           DateTime date = new DateTime.fromMillisecondsSinceEpoch(
               e.currentPosition.toInt());
-          String txt = DateFormat('mm:ss:SS', 'en_US').format(date);
+          _currentTime = DateFormat('mm:ss.SS', 'en_US').format(date);
+          notifyListeners();
         }
       });
     });

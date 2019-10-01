@@ -1,6 +1,6 @@
 import 'package:audio_recorder/ios_version/recording_button.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
-import 'package:audio_recorder/services/recording_services/recording_state.dart';
+import 'package:audio_recorder/services/recording_services/recording_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -33,7 +33,7 @@ class _RecordingTabState extends State<RecordingTab> {
   }
 
   Widget _buildTabBar(double height, double screenWidth, double buttonRadius,
-      double bottomConstraint) {
+      double bottomConstraint, Widget recordingInfo) {
     return ClipRRect(
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(20),
@@ -50,7 +50,7 @@ class _RecordingTabState extends State<RecordingTab> {
           child: Column(
             children: <Widget>[
               Expanded(
-                child: Container(),
+                child: Center(child: recordingInfo),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -100,6 +100,7 @@ class _RecordingTabState extends State<RecordingTab> {
     double height = isRecording ? 300 : 100;
     double buttonRadius = 60;
     double bottomConstraint = 15;
+    Widget recordingInfo = isRecording ? Container(child: Text(recordingState.getCurrentTime, style: TextStyle(color: Colors.white),)) : Container();
 
     return GestureDetector(
 //      onPanDown: _isRecording
@@ -132,7 +133,7 @@ class _RecordingTabState extends State<RecordingTab> {
         }
       },
       child: _buildTabBar(
-          height + heightChange, screenWidth, buttonRadius, bottomConstraint),
+          height + heightChange, screenWidth, buttonRadius, bottomConstraint, recordingInfo),
     );
   }
 }
