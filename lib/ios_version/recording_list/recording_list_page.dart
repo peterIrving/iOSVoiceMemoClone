@@ -1,3 +1,4 @@
+import 'package:audio_recorder/ios_version/recording_list/recording_list_tile.dart';
 import 'package:audio_recorder/ios_version/recording_tab.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
 import 'package:audio_recorder/services/recording_services/recording_provider.dart';
@@ -51,10 +52,7 @@ class _RecordingListPageState extends State<RecordingListPage> {
     );
   }
 
-  String _formatTimestamp(String dateString) {
-    DateTime time = DateTime.parse(dateString);
-    return DateFormat.yMMMd('en_US').add_jm().format(time).toString();
-  }
+
 
   Widget _buildCustomListView(
       RecordingState recordingState, BuildContext context) {
@@ -64,32 +62,35 @@ class _RecordingListPageState extends State<RecordingListPage> {
       future: _recordings,
       builder: (context, AsyncSnapshot<List<Recording>> snapshot) {
         if (snapshot.hasData) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        _buildCustomAppBar(),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 100.0),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                final _recording = snapshot.data[index];
-//                      final _recording = _recordings[index];
-                return ListTile(
-                  title: Text(_recording.title),
-                  subtitle: Text(_formatTimestamp(_recording.createdAt)),
-                  onTap: () {
-                    print("tile clicked");
-                    print("path ${_recording.path}");
-                    recordingState.playRecording(_recording.path);
-                  },
-                );
-              },
-              childCount: snapshot.data.length,
-            ),
-          ),
-        ),
-      ],
-    );
+          return CustomScrollView(
+            slivers: <Widget>[
+              _buildCustomAppBar(),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 100.0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      final _recordingId = snapshot.data[index].id;
+
+                      // return custom list tile that can change state
+                      // store index in this class to show which widget stores
+//                      return ListTile(
+//                        title: Text(_recording.title),
+//                        subtitle: Text(_formatTimestamp(_recording.createdAt)),
+//                        onTap: () {
+//                          print("tile clicked");
+//                          print("path ${_recording.path}");
+//                          recordingState.playRecording(_recording.path);
+//                        },
+//                      );
+                      return RecordingListTile(_recordingId);
+                    },
+                    childCount: snapshot.data.length,
+                  ),
+                ),
+              ),
+            ],
+          );
         } else if (snapshot.hasError) {
           print('error');
           return CustomScrollView(

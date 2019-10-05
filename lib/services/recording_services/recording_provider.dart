@@ -14,7 +14,8 @@ class RecordingState with ChangeNotifier {
   bool _needsFetchingFromDb = true;
   bool _isRecording = false;
   bool _isPlaying = false;
-  String _currentTime = "00:00";
+  String _currentTime = "00:00.00";
+  Recording _currentRecording;
 
   FlutterSound _flutterSound = FlutterSound();
   var _playerSubscription;
@@ -22,7 +23,10 @@ class RecordingState with ChangeNotifier {
 
   bool get getRecordingState => _isRecording;
   bool get getPlayState => _isPlaying;
-  String get getCurrentTime => _currentTime;
+  String get getCurrentTime {
+    return _currentTime.substring(0, 8);
+  }
+  Recording get getCurrentRecording => _currentRecording;
 
   Future<List<Recording>> get getRecordings async {
     print("get recordings called");
@@ -34,6 +38,11 @@ class RecordingState with ChangeNotifier {
     print("Returning recordings");
     return [..._recordings];
   }
+
+  Recording getRecordingForId(int id) {
+    return _recordings.firstWhere((recording) => recording.id == id);
+  }
+
 
   _fetchRecordingsFromDB() async {
     try {
@@ -83,8 +92,10 @@ class RecordingState with ChangeNotifier {
       notes: "",
     );
 
+
     Future<String> result = _flutterSound.startRecorder(fullPath);
 
+    _currentRecording = newRecording;
     _recordings.insert(0, newRecording);
     _isRecording = true;
     _isPlaying = false;

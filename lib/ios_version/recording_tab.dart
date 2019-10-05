@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:provider/provider.dart';
 
+import 'half_tab_recording_details.dart';
+
 class RecordingTab extends StatefulWidget {
   @override
   _RecordingTabState createState() => _RecordingTabState();
@@ -93,31 +95,18 @@ class _RecordingTabState extends State<RecordingTab> {
   @override
   Widget build(BuildContext context) {
     recordingState = Provider.of<RecordingState>(context);
-//    recordingRepository = Provider.of<RecordingsDatabaseRepository>(context);
     bool isRecording = recordingState.getRecordingState;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double height = isRecording ? 300 : 100;
     double buttonRadius = 60;
     double bottomConstraint = 15;
-    Widget recordingInfo = isRecording ? Container(child: Text(recordingState.getCurrentTime, style: TextStyle(color: Colors.white),)) : Container();
+
+    // This logic should be handeld in the half tab recording details i believe
+    Widget recordingInfo =
+        isRecording ? HalfTabRecordingDetails() : Container();
 
     return GestureDetector(
-//      onPanDown: _isRecording
-//          ? (DragDownDetails details) {
-//              print("starting y" + details.globalPosition.dy.toString());
-//              initialY = details.globalPosition.dy;
-//            }
-//          : null,
-//      onPanUpdate: _isRecording
-//          ? (DragUpdateDetails details) {
-//              setState(() {
-//                if ((details.globalPosition.dy - initialY).abs() > 0) {
-//                  heightChange = (details.globalPosition.dy - initialY).abs();
-//                }
-//              });
-//            }
-//          : null,
       onPanEnd: (DragEndDetails details) {
         double velocity = details.velocity.pixelsPerSecond.dy;
         print("velocity: $velocity");
@@ -132,8 +121,8 @@ class _RecordingTabState extends State<RecordingTab> {
           });
         }
       },
-      child: _buildTabBar(
-          height + heightChange, screenWidth, buttonRadius, bottomConstraint, recordingInfo),
+      child: _buildTabBar(height + heightChange, screenWidth, buttonRadius,
+          bottomConstraint, recordingInfo),
     );
   }
 }
