@@ -1,4 +1,6 @@
-import 'package:audio_recorder/ios_version/recording_list/recording_list_tile.dart';
+import 'package:audio_recorder/ios_version/recording_list/recording_list_provider.dart';
+import 'package:audio_recorder/ios_version/recording_list/tiles/expanded_list_tile.dart';
+import 'package:audio_recorder/ios_version/recording_list/tiles/small_list_tile.dart';
 import 'package:audio_recorder/ios_version/recording_tab.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
 import 'package:audio_recorder/services/recording_services/recording_provider.dart';
@@ -57,6 +59,8 @@ class _RecordingListPageState extends State<RecordingListPage> {
   Widget _buildCustomListView(
       RecordingState recordingState, BuildContext context) {
     final _recordings = recordingState.getRecordings;
+    final _recordingListState = Provider.of<RecordingListProvider>(context);
+
 
     return FutureBuilder(
       future: _recordings,
@@ -70,20 +74,15 @@ class _RecordingListPageState extends State<RecordingListPage> {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      final _recordingId = snapshot.data[index].id;
+                      final _recording = snapshot.data[index];
 
-                      // return custom list tile that can change state
-                      // store index in this class to show which widget stores
-//                      return ListTile(
-//                        title: Text(_recording.title),
-//                        subtitle: Text(_formatTimestamp(_recording.createdAt)),
-//                        onTap: () {
-//                          print("tile clicked");
-//                          print("path ${_recording.path}");
-//                          recordingState.playRecording(_recording.path);
-//                        },
-//                      );
-                      return RecordingListTile(_recordingId);
+                       if (index == _recordingListState.selectedIndex) {
+                         print("selected index");
+                         return ExpandedListTile(_recording);
+                       }
+                       else {
+                         return SmallListTile(_recording, index);
+                       }
                     },
                     childCount: snapshot.data.length,
                   ),

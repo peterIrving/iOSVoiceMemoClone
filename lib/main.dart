@@ -3,6 +3,8 @@ import 'package:audio_recorder/services/recording_services/recording_provider.da
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'ios_version/recording_list/recording_list_provider.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -12,6 +14,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<RecordingState>.value(
           notifier: RecordingState(),
+        ),
+        ChangeNotifierProvider<RecordingListProvider>.value(
+          notifier: RecordingListProvider(),
         ),
 
       ],
