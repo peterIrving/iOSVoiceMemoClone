@@ -1,4 +1,5 @@
 import 'package:audio_recorder/services/recording_services/recording_provider.dart';
+import 'package:audio_recorder/ui/recording_list/recording_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,8 @@ class _AnimatedButtonState extends State<AnimatedButton> {
   Widget build(BuildContext context) {
     final recordingsProvider = Provider.of<RecordingState>(context);
     bool _isRecording = recordingsProvider.getRecordingState;
+
+    final listProvider = Provider.of<RecordingListProvider>(context);
 
     double buttonRadius = _isRecording ? 32 : 70;
     ShapeBorder shapeBorder = _isRecording
@@ -36,6 +39,7 @@ class _AnimatedButtonState extends State<AnimatedButton> {
             shape: shapeBorder,
             backgroundColor: Colors.red,
             onPressed: () {
+              listProvider.setSelectedIndex = -1;
               widget.onPressed();
             }),
       ),

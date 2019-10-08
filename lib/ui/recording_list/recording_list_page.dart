@@ -1,9 +1,9 @@
-import 'package:audio_recorder/ios_version/recording_list/recording_list_provider.dart';
-import 'package:audio_recorder/ios_version/recording_list/tiles/expanded_list_tile.dart';
-import 'package:audio_recorder/ios_version/recording_list/tiles/small_list_tile.dart';
-import 'package:audio_recorder/ios_version/recording_tab.dart';
 import 'package:audio_recorder/services/Models/recording.dart';
 import 'package:audio_recorder/services/recording_services/recording_provider.dart';
+import 'package:audio_recorder/ui/recording_list/recording_list_provider.dart';
+import 'package:audio_recorder/ui/tab/recording_tab.dart';
+import 'package:audio_recorder/ui/tiles/expanded_list_tile.dart';
+import 'package:audio_recorder/ui/tiles/small_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +27,7 @@ class _RecordingListPageState extends State<RecordingListPage> {
   Widget _buildCustomAppBar() {
     return SliverAppBar(
       elevation: 3,
-      backgroundColor: Colors.black12,
+      backgroundColor: Colors.grey.shade300,
       expandedHeight: 90.0,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -77,7 +77,6 @@ class _RecordingListPageState extends State<RecordingListPage> {
                       final _recording = snapshot.data[index];
 
                        if (index == _recordingListState.selectedIndex) {
-                         print("selected index");
                          return ExpandedListTile(_recording);
                        }
                        else {
@@ -119,8 +118,6 @@ class _RecordingListPageState extends State<RecordingListPage> {
     final recordingState = Provider.of<RecordingState>(context);
     bool _isRecording = recordingState.getRecordingState;
 
-    print("isRecording: $_isRecording");
-
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -139,29 +136,10 @@ class _RecordingListPageState extends State<RecordingListPage> {
                 child: Container(),
               ),
               RecordingTab()
-//              AnimatedButton(onPressed: () {
-//                recordingState.setRecordingState(!recordingState.getRecordingState);
-//                toggleRecording(recordingState, _recordings); },)
             ],
           ),
         ],
       ),
     );
   }
-
-//  toggleRecording(RecordingState state, Recordings recordings) {
-//    print("state in toggleRecording: ${state.getRecordingState}");
-//
-//    Recording recording = Recording(
-//        createdAt: DateTime.now(),
-//        path: DateTime.now().toString(),
-//        title: "Hey is this work?"
-//    );
-//
-//    if (state.getRecordingState == true) {
-//      state.startRecording(recordings.addRecording(recording), recording.createdAt.toString() );
-//    } else {
-//      state.stopRecording();
-//    }
-//  }
 }

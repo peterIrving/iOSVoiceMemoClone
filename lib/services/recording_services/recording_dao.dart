@@ -6,23 +6,26 @@ class RecordingDao implements Dao<Recording> {
   final columnId = "id";
   final _columnTitle = "title";
   final _columnNotes = "notes";
-  final _columnPath = "path";
+  final columnPath = "path";
   final _columnCreatedAt = "created_at";
   final _columnUpdatedAt = "updated_at";
+  final _columnDuration = "duration";
 
   @override
   // TODO: implement createTableQuery
   String get createTableQuery {
     return """
       CREATE TABLE $tableName(
-        $columnId INTEGER PRIMARY KEY,
         $_columnTitle TEXT,
         $_columnNotes TEXT,
-        $_columnPath TEXT,
+        $columnPath TEXT,
         $_columnCreatedAt DATE,
-        $_columnUpdatedAt DATE)
+        $_columnUpdatedAt DATE,
+        $_columnDuration TEXT)
     """;
   }
+  //        $columnId INTEGER PRIMARY KEY,
+
 
   @override
   List<Recording> fromList(List<Map<String, dynamic>> query) {
@@ -37,12 +40,13 @@ class RecordingDao implements Dao<Recording> {
   Recording fromMap(Map<String, dynamic> query) {
     Recording recording = Recording();
 
-    recording.id = query[columnId];
+//    recording.id = query[columnId];
     recording.title = query[_columnTitle];
     recording.notes = query[_columnNotes];
     recording.createdAt = query[_columnCreatedAt];
-    recording.title = query[_columnTitle];
+    recording.path = query[columnPath];
     recording.updatedAt = query[_columnUpdatedAt];
+    recording.duration = query[_columnDuration];
 
     return recording;
   }
@@ -50,12 +54,13 @@ class RecordingDao implements Dao<Recording> {
   @override
   Map<String, dynamic> toMap(Recording object) {
     return <String, dynamic>{
-      columnId: object.id,
+//      columnId: object.id,
       _columnTitle: object.title,
       _columnNotes: object.notes,
-      _columnPath: object.path.toString(),
+      columnPath: object.path.toString(),
       _columnCreatedAt: object.createdAt.toString(),
       _columnUpdatedAt: object.updatedAt.toString(),
+      _columnDuration: object.duration.toString()
     };
   }
 }

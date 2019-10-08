@@ -22,27 +22,28 @@ class RecordingState with ChangeNotifier {
   var _recordingSubscription;
 
   bool get getRecordingState => _isRecording;
+
   bool get getPlayState => _isPlaying;
+
   String get getCurrentTime {
     return _currentTime.substring(0, 8);
   }
+
   Recording get getCurrentRecording => _currentRecording;
 
   Future<List<Recording>> get getRecordings async {
-    print("get recordings called");
     if (_needsFetchingFromDb == true) {
       print("needs to fetch from db");
       await _fetchRecordingsFromDB();
       _needsFetchingFromDb = false;
     }
-    print("Returning recordings");
     return [..._recordings];
   }
 
-  Recording getRecordingForId(int id) {
-    return _recordings.firstWhere((recording) => recording.id == id);
-  }
-
+//
+//  Recording getRecordingForId(int id) {
+//    return _recordings.firstWhere((recording) => recording.id == id);
+//  }
 
   _fetchRecordingsFromDB() async {
     try {
@@ -57,11 +58,6 @@ class RecordingState with ChangeNotifier {
     _isPlaying = false;
     notifyListeners();
   }
-
-
-
-
-
 
   Future<String> _getAppDirectory() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -92,6 +88,7 @@ class RecordingState with ChangeNotifier {
       notes: "",
     );
 
+    print("full path at recording " + fullPath);
 
     Future<String> result = _flutterSound.startRecorder(fullPath);
 
@@ -118,6 +115,8 @@ class RecordingState with ChangeNotifier {
     });
   }
 
+  // current recording ...id?
+
   stopRecording() {
     print("stop recording");
     Future<String> result = _flutterSound.stopRecorder();
@@ -130,6 +129,13 @@ class RecordingState with ChangeNotifier {
     result.then((value) {
       print('stopRecorder: $value');
 
+      print("stopped time/current time = $_currentTime");
+      _currentRecording.duration = _currentTime;
+      print("recordings duration: " + _currentRecording.duration);
+      RecordingsRepository().update(_currentRecording);
+
+      // update database object with current last current time
+
       if (_recordingSubscription != null) {
         _recordingSubscription.cancel();
         _recordingSubscription = null;
@@ -139,8 +145,8 @@ class RecordingState with ChangeNotifier {
 
   playRecording(String path) async {
     print("play recording in provider");
-    Future<String> result =
-        _flutterSound.startPlayer(path);
+    print("path = $path");
+    Future<String> result = _flutterSound.startPlayer(path);
 
     _isPlaying = true;
     notifyListeners();
@@ -154,8 +160,24 @@ class RecordingState with ChangeNotifier {
               e.currentPosition.toInt());
           _currentTime = DateFormat('mm:ss.SS', 'en_US').format(date);
           notifyListeners();
+        } else {
+          _isPlaying = false;
+          notifyListeners();
         }
       });
+    });
+  }
+
+  stopPlayback() async {
+    Future<String> result = _flutterSound.stopPlayer();
+
+    result.then((value) {
+      print('stopPlayer: $result');
+      if (_playerSubscription != null) {
+        _playerSubscription.cancel();
+        _playerSubscription = null;
+        _isPlaying = false;
+      }
     });
   }
 }

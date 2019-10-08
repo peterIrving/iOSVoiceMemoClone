@@ -1,9 +1,9 @@
-import 'package:audio_recorder/ios_version/recording_list/recording_list_page.dart';
 import 'package:audio_recorder/services/recording_services/recording_provider.dart';
+import 'package:audio_recorder/ui/recording_list/recording_list_page.dart';
+import 'package:audio_recorder/ui/recording_list/recording_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'ios_version/recording_list/recording_list_provider.dart';
 
 void main() => runApp(MyApp());
 

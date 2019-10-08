@@ -24,17 +24,20 @@ class RecordingsRepository {
   Future<Recording> delete(Recording recording) async {
     final db = await databaseHelper.database;
     await db.delete(dao.tableName,
-        where: dao.columnId + " = ?", whereArgs: [recording.id]);
+        where: dao.columnPath + " = ?", whereArgs: [recording.path]);
     return recording;
   }
 
   // todo update and update repository
   Future<Recording> update(Recording recording) async {
     final db = await databaseHelper.database;
-    await db.update(dao.tableName, dao.toMap(recording),
-        where: dao.columnId + " = ?", whereArgs: [recording.id]);
+    var result = await db.update(dao.tableName, dao.toMap(recording),
+        where: dao.columnPath + " = ?", whereArgs: [recording.path]);
+    print("update result $result");
     return recording;
   }
+
+
 
   Future<List<Recording>> getRecordings() async {
     final db = await databaseHelper.database;

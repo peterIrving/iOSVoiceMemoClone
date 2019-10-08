@@ -1,6 +1,10 @@
 import 'package:audio_recorder/services/Models/recording.dart';
+import 'package:audio_recorder/services/recording_services/recording_dao.dart';
+import 'package:audio_recorder/services/recording_services/recording_provider.dart';
 import 'package:audio_recorder/services/string_utilities.dart';
+import 'package:audio_recorder/ui/tiles/playback_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ExpandedListTile extends StatefulWidget {
   final Recording recording;
@@ -15,9 +19,22 @@ class ExpandedListTile extends StatefulWidget {
 }
 
 class _ExpandedListTileState extends State<ExpandedListTile> {
+
+  RecordingState recordingState;
+
+  @override
+  void dispose() {
+    if (recordingState.getPlayState == true) {
+      print("Stopping playback");
+      recordingState.stopPlayback();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    recordingState = Provider.of<RecordingState>(context);
+
     return Container(
       child: Column(
         children: <Widget>[
@@ -50,38 +67,21 @@ class _ExpandedListTileState extends State<ExpandedListTile> {
                   child: Container(),
                 ),
                 Text(
-                  "00:00",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  widget.recording.duration.substring(0, 5),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 )
               ],
             ),
           ),
           Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                child: Stack(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        SizedBox(height: 5,),
-                        Container(
-                          height: 3,
-                          color: Colors.grey.shade300,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey,
-                      ),
-                      height: 14,
-                    )
-                  ],
-                ),
-              )),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+            child: Container(
+              height: 38,
+              child: PlaybackBar(widget.recording),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 2.0),
             child: Row(
               children: <Widget>[
                 IconButton(
@@ -102,9 +102,15 @@ class _ExpandedListTileState extends State<ExpandedListTile> {
                 ),
                 IconButton(
                   iconSize: 50,
-                  icon: Icon(Icons.play_arrow),
+                  icon: Icon(recordingState.getPlayState
+                      ? Icons.pause
+                      : Icons.play_arrow),
                   onPressed: () {
-                    print("taP");
+                    if (recordingState.getPlayState == true) {
+                      recordingState.stopPlayback();
+                    } else {
+                      recordingState.playRecording(widget.recording.path);
+                    }
                   },
                 ),
                 IconButton(

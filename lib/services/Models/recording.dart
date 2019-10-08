@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Recording with ChangeNotifier {
-  int id;
   String title;
   String notes;
   String path;
   String createdAt;
   String updatedAt;
+  String duration;
+
 
   Recording({
-    this.id,
     @required this.path,
     @required this.createdAt,
     this.title = "untitled",
