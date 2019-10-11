@@ -5,7 +5,6 @@ import 'package:audio_recorder/ui/recording_list/recording_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class SmallListTile extends StatelessWidget {
   final Recording recording;
   final int index;
@@ -36,7 +35,9 @@ class SmallListTile extends StatelessWidget {
                 child: Container(),
               ),
               Text(
-                recording.duration == null ? recordingState.getCurrentTime.substring(0, 5) : recording.duration.substring(0, 5),
+                recording.duration == null
+                    ? recordingState.getCurrentTime.substring(0, 5)
+                    : recording.duration.substring(0, 5),
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               )
             ],

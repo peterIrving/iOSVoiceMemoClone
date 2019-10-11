@@ -20,13 +20,11 @@ class _PlaybackBarState extends State<PlaybackBar> {
 
   _getSizes(_) {
     final RenderBox renderBoxRed = _durationBarKey.currentContext.findRenderObject();
-//    final sizeCircle = renderBoxRed.size;
-//    final positionCircle = renderBoxRed.localToGlobal(Offset.zero);
-    print("width of bar = " + renderBoxRed.size.width.toString());
-    barWidth = renderBoxRed.size.width - 14;
 
-//    print("SIZE of circle: $sizeCircle");
-//    print("Position of cicle: $positionCircle");
+    print("width of bar = " + renderBoxRed.size.width.toString());
+//    barWidth = renderBoxRed.size.width - 14;
+    barWidth = 0.0;
+
   }
 
   @override

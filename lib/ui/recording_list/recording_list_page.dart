@@ -7,6 +7,7 @@ import 'package:audio_recorder/ui/tiles/small_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class RecordingListPage extends StatefulWidget {
@@ -22,6 +23,15 @@ class _RecordingListPageState extends State<RecordingListPage> {
   @override
   initState() {
     super.initState();
+
+    // check permissions
+    _checkPermissions();
+  }
+
+  _checkPermissions() async {
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler()
+            .requestPermissions([PermissionGroup.microphone, PermissionGroup.storage]);
   }
 
   Widget _buildCustomAppBar() {
@@ -54,13 +64,10 @@ class _RecordingListPageState extends State<RecordingListPage> {
     );
   }
 
-
-
   Widget _buildCustomListView(
       RecordingState recordingState, BuildContext context) {
     final _recordings = recordingState.getRecordings;
     final _recordingListState = Provider.of<RecordingListProvider>(context);
-
 
     return FutureBuilder(
       future: _recordings,
@@ -76,12 +83,11 @@ class _RecordingListPageState extends State<RecordingListPage> {
                     (BuildContext context, int index) {
                       final _recording = snapshot.data[index];
 
-                       if (index == _recordingListState.selectedIndex) {
-                         return ExpandedListTile(_recording);
-                       }
-                       else {
-                         return SmallListTile(_recording, index);
-                       }
+                      if (index == _recordingListState.selectedIndex) {
+                        return ExpandedListTile(_recording);
+                      } else {
+                        return SmallListTile(_recording, index);
+                      }
                     },
                     childCount: snapshot.data.length,
                   ),
